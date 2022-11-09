@@ -98,11 +98,10 @@ static Cell *cell;
 
 
 void generateMazeData() {
-
-    map[0][1].Door[0] = true;
-    map[0][1].Door[1] = true;
-    map[0][1].Door[2] = true;
-    map[0][1].Door[3] = true;
+    map[0][1].Door[0] = false;
+    map[0][1].Door[1] = false;
+    map[0][1].Door[2] = false;
+    map[0][1].Door[3] = false;
 
     map[0][2].Door[0] = true;
     map[0][2].Door[1] = true;
@@ -178,13 +177,11 @@ void generateMazeData() {
     map[3][3].Door[1] = true;
     map[3][3].Door[2] = true;
     map[3][3].Door[3] = true;
-
 }
 
 
 /**added to test draw*/
 void updateAnimationLoop() {
-    vertexbufferChar_size = 0;
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -193,14 +190,9 @@ void updateAnimationLoop() {
 
     // 1rst attribute buffer : vertices
     glEnableVertexAttribArray(0);
-    glBindVertexArray(vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    //glBindBuffer(GL_ARRAY_BUFFER, vertexbufferChar);
 
 
-
-    /*glGenBuffers(1, &vertexbufferTest[2]);
-    glGenBuffers(1, &vertexbufferTest[2]);*/
     glVertexAttribPointer(
             0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
             3,  // size
@@ -211,13 +203,7 @@ void updateAnimationLoop() {
     );
 
 
-    /*Draw the triangle !*/
     glDrawArrays(GL_TRIANGLES, 0, vertexbuffer_size); // 3 indices starting at 0 -> 1 triangle
-    //2nd attribute buffer : vertices*/
-    //glDrawArrays(GL_LINE, 0, vertexbufferChar_size); // 3 indices starting at 0 -> 1 triangle
-
-
-
 
 
     //glDisableVertexAttribArray(0);
@@ -238,6 +224,7 @@ static bool rotationChange = true;
 static int rotationStatus = true;
 
 static glm::vec2 myT = glm::vec2(0.0f, 0.0f);
+static glm::vec2 myTLine = glm::vec2(0.0f, 0.0f);
 
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -358,6 +345,17 @@ bool initializeWindow() {
 
 
 bool initializeVertexbuffer() {
+
+    /*array Deffiniton Contance */
+    const int countTriangle = 2;
+    const int countLinesTrinagle = 3;
+    const int dimensions = 3;
+    const int countLines = 3;
+
+
+    int loc = 0;
+    static bool inital = true;
+    float localRotation = 0.0f;
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
@@ -366,9 +364,21 @@ bool initializeVertexbuffer() {
 
         static int rotationLevel = 0;
 
+        /*glm::vec2 triangleVertice1 = glm::vec2(-0.25f, -0.01f);
+        glm::vec2 triangleVertice2 = glm::vec2(0.25f, -0.01f);
+        glm::vec2 triangleVertice3 = glm::vec2(-0.25f, 0.01f);*/
         glm::vec2 triangleVertice1 = glm::vec2(-0.25f, -0.25f);
         glm::vec2 triangleVertice2 = glm::vec2(0.25f, -0.25f);
         glm::vec2 triangleVertice3 = glm::vec2(0.0f, 0.25f);
+
+        const glm::vec2 triangleVerticeLine1 = glm::vec2(-0.25f, -0.01f);
+        const glm::vec2 triangleVerticeLine2 = glm::vec2(0.25f, -0.01f);
+        const glm::vec2 triangleVerticeLine3 = glm::vec2(-0.25f, 0.01f);
+
+        glm::vec2 localtriangleVerticeLine1 = triangleVerticeLine1;
+        glm::vec2 localtriangleVerticeLine2 = triangleVerticeLine2;
+        glm::vec2 localtriangleVerticeLine3 = triangleVerticeLine3;
+
 
         float loc_myR = rotation / 180.0f * M_PI;
         myR = glm::mat2(cos(loc_myR), -sin(loc_myR),
@@ -382,7 +392,7 @@ bool initializeVertexbuffer() {
 
         myT = glm::vec2(curr_x, curr_y);
 
-        std::cout << "change " << changeVec[0] << " change2 " << changeVec[1] << std::endl;
+        std::cout << "change " << myT[0] << " change2 " << myT[1] << std::endl;
 
         triangleVertice1 = myR * triangleVertice1 + myT;
         triangleVertice2 = myR * triangleVertice2 + myT;
@@ -392,14 +402,22 @@ bool initializeVertexbuffer() {
         myR = glm::mat2(1, 0,
                         0, 1);
 
-        // amoung of wall * ammoung of walls * vetricies needed per block
-        int size = 3 + (sizeof map * 4 * (9 * 2));
-        vertexbuffer_size = 3 + (sizeof map * 3 * 4);
-        GLfloat g_vertex_buffer_data[size];
 
-        /*triangleVertice1[0], triangleVertice1[1], 0.0f,
-        triangleVertice2[0], triangleVertice2[1], 0.0f,
-        triangleVertice3[0], triangleVertice3[1], 0.0f,*/
+        // 4*4*4 *2 * 3 = 384
+        int size = (sizeof(map) * (countTriangle * countLines));
+        //2 block per line :)
+        //
+        //vertexbuffer_size = ((size * 2) + (countLinesTrinagle * dimensions));
+        //384+3=387
+        vertexbuffer_size = size + 3;
+        //size += 3;
+        std::cout << "size" << vertexbuffer_size << std::endl;
+        //387*3->
+        //if(!g_vertex_buffer_data) {
+        GLfloat g_vertex_buffer_data[vertexbuffer_size * 3];
+        //g_vertex_buffer_data = new GLfloat[vertexbuffer_size * 3];
+        //}
+
 
         g_vertex_buffer_data[0] = triangleVertice1[0];
         g_vertex_buffer_data[1] = triangleVertice1[1];
@@ -410,9 +428,11 @@ bool initializeVertexbuffer() {
         g_vertex_buffer_data[6] = triangleVertice3[0];
         g_vertex_buffer_data[7] = triangleVertice3[1];
         g_vertex_buffer_data[8] = 0.0f;
+        loc = 9;
+
 
         //second triangle
-        g_vertex_buffer_data[9] = -0.5f;
+        /*g_vertex_buffer_data[9] = -0.5f;
         g_vertex_buffer_data[10] = 0.5f;
         g_vertex_buffer_data[11] = 0.0f;
         g_vertex_buffer_data[12] = 0.5f;
@@ -420,46 +440,112 @@ bool initializeVertexbuffer() {
         g_vertex_buffer_data[14] = 0.0f;
         g_vertex_buffer_data[15] = 0.5f;
         g_vertex_buffer_data[16] = -0.5f;
-        g_vertex_buffer_data[17] = 0.0f;
-
-        //initializeVertexbufferChar(g_vertex_buffer_data);
+        g_vertex_buffer_data[17] = 0.0f;*/
 
         /*todo move out*/
 
-        /*for (int i = 0; i < sizeof map; i++) {
-            for (int j = 0; j < sizeof map[i]; j++) {
-                if (map[i][j].Door[0]) {
-                    rotationWall = 0;
+
+        if (inital) {
+            int sizeOfArr = sizeof(map) / sizeof(map[0]);
+            int sizeOfArrY = sizeOfArr = sizeof(map[0]) / sizeof(map[0]->Door);;
+
+            float x_offsetVal = (2.0f / (float) sizeOfArr);
+            float y_offsetVal = (2.0f / (float) sizeOfArrY);
+            float point1_x = 0.9;
+            float point1_y = 0.9;
+            float point2_x;
+            float point2_y;
+            glm::vec2 changeVecLine = glm::vec2(0.0f, 0.0f);
+
+            std::cout << "sizeOfArr  " << sizeOfArrY << std::endl;
+            for (int i = 0; i < sizeOfArr; i++) {
+                for (int j = 0; j < sizeOfArrY; j++) {
+                    for (int dor = 0; dor < 4; dor++) {
+                        localtriangleVerticeLine1 = triangleVerticeLine1;
+                        localtriangleVerticeLine2 = triangleVerticeLine2;
+                        localtriangleVerticeLine3 = triangleVerticeLine3;
+                        if (dor == 0 && map[i][j].Door[0]) {
+                            localRotation = fmod(0, 360);
+                        }
+                        if (dor == 1 && map[i][j].Door[1]) {
+                            localRotation = fmod(90, 360);
+                        }
+                        if (dor == 2 && map[i][j].Door[2]) {
+                            localRotation = fmod(180, 360);
+                        }
+                        if (dor == 3 && map[i][j].Door[3]) {
+                            localRotation = fmod(360, 360);
+                        }
+
+                        changeVecLine = glm::vec2(point1_x, point1_y);
+
+                        std::cout << "changeVecLine " << changeVecLine[0];
+                        std::cout << " " << changeVecLine[1] << std::endl;
+                        /*currLine_x += (localRotation * changeVec)[0];
+                        currLine_y += (localRotation * changeVec)[1];*/
+
+                        myTLine = glm::vec2(currLine_x, currLine_y);
+
+
+                        float loc_myRLine = rotationWall / 180.0f * M_PI;
+
+                        myRLine = glm::mat2(cos(loc_myRLine), -sin(loc_myRLine),
+                                            sin(loc_myRLine), cos(loc_myRLine));
+
+                        currLine_x = (myRLine * changeVecLine)[0];
+                        currLine_y = (myRLine * changeVecLine)[1];
+
+                        localtriangleVerticeLine1 = myRLine * localtriangleVerticeLine1 + myTLine;
+                        localtriangleVerticeLine2 = myRLine * localtriangleVerticeLine2 + myTLine;
+                        localtriangleVerticeLine3 = myRLine * localtriangleVerticeLine3 + myTLine;
+
+
+                        //triangle 1
+                        g_vertex_buffer_data[loc] = localtriangleVerticeLine1[0];
+                        g_vertex_buffer_data[loc + 1] = localtriangleVerticeLine1[1];
+                        g_vertex_buffer_data[loc + 2] = 0.0f;
+                        g_vertex_buffer_data[loc + 3] = localtriangleVerticeLine2[0];
+                        g_vertex_buffer_data[loc + 4] = localtriangleVerticeLine2[1];
+                        g_vertex_buffer_data[loc + 5] = 0.0f;
+                        g_vertex_buffer_data[loc + 6] = localtriangleVerticeLine3[0];
+                        g_vertex_buffer_data[loc + 7] = localtriangleVerticeLine3[1];
+                        g_vertex_buffer_data[loc + 8] = 0.0f;
+                        //std::cout << "loc+8 " << loc+9 << "compare " << vertexbuffer_size << std::endl;
+                        loc += 9;
+
+                        myRLine = glm::mat2(cos(loc_myRLine), sin(loc_myRLine),
+                                            -sin(loc_myRLine), cos(loc_myRLine));
+
+                        currLine_x = (myRLine * changeVecLine)[0];
+                        currLine_y = (myRLine * changeVecLine)[1];
+
+                        localtriangleVerticeLine1 = myRLine * localtriangleVerticeLine1 + myTLine;
+                        localtriangleVerticeLine2 = myRLine * localtriangleVerticeLine2 + myTLine;
+                        localtriangleVerticeLine3 = myRLine * localtriangleVerticeLine3 + myTLine;
+
+                        //triangle 2
+                        g_vertex_buffer_data[loc] = localtriangleVerticeLine1[0];
+                        g_vertex_buffer_data[loc + 1] = localtriangleVerticeLine1[1];
+                        g_vertex_buffer_data[loc + 2] = 0.0f;
+                        g_vertex_buffer_data[loc + 3] = localtriangleVerticeLine2[0];
+                        g_vertex_buffer_data[loc + 4] = localtriangleVerticeLine2[1];
+                        g_vertex_buffer_data[loc + 5] = 0.0f;
+                        g_vertex_buffer_data[loc + 6] = localtriangleVerticeLine3[0];
+                        g_vertex_buffer_data[loc + 7] = localtriangleVerticeLine3[1];
+                        g_vertex_buffer_data[loc + 8] = 0.0f;
+                        std::cout << "loc+8 " << loc + 8 << "compare " << vertexbuffer_size << std::endl;
+                        loc += 9;
+
+
+                    }
+                    point1_y -= y_offsetVal;
                 }
-                if (map[i][j].Door[1]) {
-                    rotationWall = 1;
-                }
-                if (map[i][j].Door[2]) {
-                    rotationWall = 0.45;
-                }
-                if (map[i][j].Door[3]) {
-                    rotationWall = 0.45;
-                }
-                curr_y = (wallLength * (float) i);
-                curr_x = (wallLength * (float) j);
+                point1_x += x_offsetVal;
 
-                myT = glm::vec2(curr_x, curr_y);
-
-                vertexbufferChar_size = +2;
-                lineVertice1 = VerticeMap[0];
-
-
-                float loc_myRLine = rotationWall / 180.0f * M_PI;
-
-                myRLine = glm::mat2(cos(loc_myRLine), -sin(loc_myRLine),
-                                    sin(loc_myRLine), cos(loc_myRLine));
-                lineVertice1 = myRLine * lineVertice1 + myT;
-
-
-                g_vertex_buffer_data[(i * 2) + j] = lineVertice1[0];
-                g_vertex_buffer_data[(i * 2) + j + 1] = lineVertice1[1];
             }
-        }*/
+            inital = false;
+            std::cout << "loc" << loc << std::endl;
+        }
 
 
         glGenBuffers(1, &vertexbuffer);
