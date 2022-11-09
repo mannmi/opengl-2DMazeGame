@@ -19,9 +19,15 @@ GLuint vertexbufferChar_size;
 //program ID of the shaders, required for handling the shaders with OpenGL
 GLuint programID;
 
+GLfloat *g_vertex_buffer_data;
+
 float curr_x;
 float curr_y;
 float rotation;
+
+float currLine_x;
+float currLine_y;
+float rotationLine;
 
 
 float rotationWall;
@@ -32,6 +38,8 @@ std::vector<glm::vec2> VerticeMap;
 
 glm::vec2 lineVertice1;
 glm::vec2 LineVertice2;
+
+//GLfloat * g_vertex_buffer_data;
 
 
 int main(void); //<<< main function, called at startup
