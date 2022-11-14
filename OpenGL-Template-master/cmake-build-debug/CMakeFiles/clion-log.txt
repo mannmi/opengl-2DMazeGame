@@ -1,24 +1,4 @@
-/home/mannmi/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/mannmi/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/ninja/linux/ninja -G Ninja -S /home/mannmi/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master -B /home/mannmi/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug
-CMake Warning (dev) at /home/mannmi/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/linux/share/cmake-3.23/Modules/FindOpenGL.cmake:315 (message):
-  Policy CMP0072 is not set: FindOpenGL prefers GLVND by default when
-  available.  Run "cmake --help-policy CMP0072" for policy details.  Use the
-  cmake_policy command to set the policy and suppress this warning.
-
-  FindOpenGL found both a legacy GL library:
-
-    OPENGL_gl_LIBRARY: /usr/lib/x86_64-linux-gnu/libGL.so
-
-  and GLVND libraries for OpenGL and GLX:
-
-    OPENGL_opengl_LIBRARY: /usr/lib/x86_64-linux-gnu/libOpenGL.so
-    OPENGL_glx_LIBRARY: /usr/lib/x86_64-linux-gnu/libGLX.so
-
-  OpenGL_GL_PREFERENCE has not been set to "GLVND" or "LEGACY", so for
-  compatibility with CMake 3.10 and below the legacy GL library will be used.
-Call Stack (most recent call first):
-  CMakeLists.txt:5 (find_package)
-This warning is for project developers.  Use -Wno-dev to suppress it.
-
+C:\Users\root\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\222.4345.21\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/Users/root/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/ninja/win/ninja.exe -G Ninja -S F:\CLionProjects\opengl-2DMazeGame\OpenGL-Template-master -B F:\CLionProjects\opengl-2DMazeGame\OpenGL-Template-master\cmake-build-debug
 CMake Deprecation Warning at external/glfw-3.1.2/CMakeLists.txt:8 (cmake_policy):
   The OLD behavior for policy CMP0042 will be removed from a future version
   of CMake.
@@ -30,8 +10,8 @@ CMake Deprecation Warning at external/glfw-3.1.2/CMakeLists.txt:8 (cmake_policy)
 
 
 -- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
--- Using X11 for window creation
--- Using GLX for context creation
+-- Using Win32 for window creation
+-- Using WGL for context creation
 CMake Deprecation Warning at CMakeLists.txt:23 (cmake_policy):
   The OLD behavior for policy CMP0026 will be removed from a future version
   of CMake.
@@ -44,4 +24,4 @@ CMake Deprecation Warning at CMakeLists.txt:23 (cmake_policy):
 
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/mannmi/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug
+-- Build files have been written to: F:/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug

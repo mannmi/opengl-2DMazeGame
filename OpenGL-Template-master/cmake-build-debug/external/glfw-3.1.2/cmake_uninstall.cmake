@@ -1,22 +1,22 @@
 
-if (NOT EXISTS "/home/mannmi/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug/external/glfw-3.1.2/install_manifest.txt")
-  message(FATAL_ERROR "Cannot find install manifest: \"/home/mannmi/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug/external/glfw-3.1.2/install_manifest.txt\"")
+if (NOT EXISTS "F:/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug/external/glfw-3.1.2/install_manifest.txt")
+  message(FATAL_ERROR "Cannot find install manifest: \"F:/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug/external/glfw-3.1.2/install_manifest.txt\"")
 endif()
 
-file(READ "/home/mannmi/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug/external/glfw-3.1.2/install_manifest.txt" files)
+file(READ "F:/CLionProjects/opengl-2DMazeGame/OpenGL-Template-master/cmake-build-debug/external/glfw-3.1.2/install_manifest.txt" files)
 string(REGEX REPLACE "\n" ";" files "${files}")
 
 foreach (file ${files})
   message(STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"")
   if (EXISTS "$ENV{DESTDIR}${file}")
-    exec_program("/home/mannmi/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/linux/bin/cmake" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
+    exec_program("C:/Users/root/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/win/bin/cmake.exe" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
                  OUTPUT_VARIABLE rm_out
                  RETURN_VALUE rm_retval)
     if (NOT "${rm_retval}" STREQUAL 0)
       MESSAGE(FATAL_ERROR "Problem when removing \"$ENV{DESTDIR}${file}\"")
     endif()
   elseif (IS_SYMLINK "$ENV{DESTDIR}${file}")
-    EXEC_PROGRAM("/home/mannmi/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/linux/bin/cmake" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
+    EXEC_PROGRAM("C:/Users/root/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/222.4345.21/bin/cmake/win/bin/cmake.exe" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
                  OUTPUT_VARIABLE rm_out
                  RETURN_VALUE rm_retval)
     if (NOT "${rm_retval}" STREQUAL 0)

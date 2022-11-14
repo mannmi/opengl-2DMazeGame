@@ -1,3 +1,7 @@
+/*
+ * taken from the Moodle Cource CG Offerd at the THU
+ * by https://github.com/Alfred-Franz/
+ */
 #include <cassert>
 #include <fstream>
 #include <iostream>
