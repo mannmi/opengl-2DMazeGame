@@ -1,6 +1,7 @@
 #ifndef PLAYGROUND_H
 #define PLAYGROUND_H
 
+#include "RenderingObject.h"
 // Include GLEW
 #include <GL/glew.h>
 #include <vector>
@@ -50,7 +51,32 @@ bool initializeVertexbuffer(); //<<< initializes the vertex buffer array and bin
 bool cleanupVertexbuffer(); //<<< frees all recources from the vertex buffer
 bool closeWindow(); //<<< Closes the OpenGL window and terminates GLFW
 //bool initializeVertexbufferChar(const GLfloat g_vertex_buffer_data[]) {
+void generateMazeData();
 
+void createVertext();
 //void initializeVertexbufferChar(GLfloat &g_vertex_buffer_data[]);
+
+void initializeVertexbuffer(std::vector<glm::vec3> &verticies);
+
+
+
+void SetVertices(std::vector<glm::vec3> vertrcies);
+
+//new Added
+//added from Prof
+RenderingObject ground;
+RenderingObject bunny;
+
+std::vector<glm::vec3> mapVericies;
+std::vector<glm::vec3> playerVerticies;
+
+
+bool initVectormap();
+bool initVectorChar();
+
+bool newinitializeVertexbuffer();
+
+bool vectorUppdate();
+
 
 #endif
