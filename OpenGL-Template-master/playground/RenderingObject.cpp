@@ -1,3 +1,7 @@
+/*
+ * taken from the Moodle Course CG Offered at the THU
+ * by https://github.com/Alfred-Franz/
+ */
 #include "RenderingObject.h"
 #include <common/texture.hpp>
 #include <playground/parse_stl.h>
@@ -50,7 +54,7 @@ void RenderingObject::SetTexture(std::vector<glm::vec2> uvbufferdata, GLubyte te
     glBufferData(GL_ARRAY_BUFFER, uvbufferdata.size() * sizeof(glm::vec2), &uvbufferdata[0], GL_STATIC_DRAW);
 }
 
-void RenderingObject::SetTexture(std::vector<glm::vec2> uvbufferdata, std::string bmpPath) {
+/*void RenderingObject::SetTexture(std::vector<glm::vec2> uvbufferdata, std::string bmpPath) {
     texture_present = true;
     glGenTextures(1, &texID);
     texID = loadBMP_custom(bmpPath.c_str());
@@ -60,7 +64,7 @@ void RenderingObject::SetTexture(std::vector<glm::vec2> uvbufferdata, std::strin
     glGenBuffers(1, &uvbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
     glBufferData(GL_ARRAY_BUFFER, uvbufferdata.size() * sizeof(glm::vec2), &uvbufferdata[0], GL_STATIC_DRAW);
-}
+}*/
 
 void RenderingObject::DrawObject() {
 
@@ -114,7 +118,7 @@ void RenderingObject::DrawObject() {
     glDisableVertexAttribArray(0);
 }
 
-void RenderingObject::LoadSTL(std::string stl_file_name) {
+/*void RenderingObject::LoadSTL(std::string stl_file_name) {
     //load stl file and construct vertex buffer
     auto info = stl::parse_stl(stl_file_name);
     std::vector<stl::triangle> triangles = info.triangles;
@@ -129,7 +133,7 @@ void RenderingObject::LoadSTL(std::string stl_file_name) {
     computeVertexNormalsOfTriangles(vertices, normals);
     this->SetNormals(normals);
 
-}
+}*/
 
 std::vector<glm::vec3>
 RenderingObject::getAllTriangleNormalsForVertex(stl::point vertex, std::vector<stl::triangle> triangles) {

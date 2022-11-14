@@ -73,6 +73,8 @@ add_executable(playground
         playground/SimpleVertexShader.vertexshader
         common/shader.cpp
         common/shader.hpp
+        playground/RenderingObject.cpp
+        playground/RenderingObject.h
         )
 target_link_libraries(playground
         ${ALL_LIBS}
@@ -87,10 +89,10 @@ SOURCE_GROUP(shaders REGULAR_EXPRESSION ".*/.*shader$")
 
 if (NOT ${CMAKE_GENERATOR} MATCHES "Xcode")
 
-    add_custom_command(
-            TARGET playground POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/playground${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/playground/"
-    )
+#    add_custom_command(
+#            TARGET playground POST_BUILD
+#            COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/playground${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/playground/"
+#    )
 
 
 elseif (${CMAKE_GENERATOR} MATCHES "Xcode")
