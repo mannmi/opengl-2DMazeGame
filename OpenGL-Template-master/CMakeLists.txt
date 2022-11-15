@@ -57,7 +57,7 @@ add_definitions(
 #	playground/playground.h
 #	playground/RenderingObject.cpp
 #	playground/RenderingObject.h
-#	playground/SimpleFragmentShader.fragmentshader
+#	playground/SimpleFragmentShader_fragment.shader
 #	playground/SimpleVertexShader.vertexshader
 #	common/shader.cpp
 #	common/shader.hpp
@@ -69,7 +69,7 @@ add_definitions(
 add_executable(playground
         playground/playground.cpp
         playground/playground.h
-        playground/SimpleFragmentShader.fragmentshader
+        playground/SimpleFragmentShader_fragment.shader
         playground/SimpleVertexShader.vertexshader
         common/shader.cpp
         common/shader.hpp

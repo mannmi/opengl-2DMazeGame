@@ -66,9 +66,12 @@ void SetVertices(std::vector<glm::vec3> vertrcies);
 //added from Prof
 RenderingObject ground;
 RenderingObject bunny;
+RenderingObject objective;
 
 std::vector<glm::vec3> mapVericies;
 std::vector<glm::vec3> playerVerticies;
+std::vector<glm::vec3> boxVerticies;
+glm::vec4 collor = glm::vec4(0.5, 0.0, 0.0, 1.0);
 
 
 bool initVectormap();
@@ -77,6 +80,31 @@ bool initVectorChar();
 bool newinitializeVertexbuffer();
 
 bool vectorUppdate();
+
+glm::vec3 context;
+//glm::vec4 objective;
+
+void initVectorObjective();
+
+float pointtemp_xBox;
+float pointtemp_yBox;
+
+bool getCordinates(float x = curr_x, float y=curr_y);
+
+int getConntext();
+
+int curent_x_Cordinate;
+int curent_y_Cordinate;
+float clamp(float value, float min, float max);
+
+glm::vec3 colisionVector1;
+glm::vec3 colisionVector2;
+glm::vec3 colisionVector3;
+
+float getLargest(float,float,float);
+float getSmal(float,float,float);
+
+bool collisionDetection();
 
 
 #endif

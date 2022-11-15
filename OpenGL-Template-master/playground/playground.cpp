@@ -49,14 +49,11 @@ int main(void) {
     if (!vertexbufferInitialized) return -1;
 
     // Create and compile our GLSL program from the shaders
-    programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+    programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader_fragment.shader");
 
     //start animation loop until escape key is pressed
     do {
-
         updateAnimationLoop();
-
-
     } // Check if the ESC key was pressed or the window was closed
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
            glfwWindowShouldClose(window) == 0);
@@ -75,6 +72,7 @@ typedef struct Cell {
     //bool is_open;	// may be needed to generate it latter
     bool Door[4]{};   // Contains if there is a Door or not
 
+
     Cell() {
         //    is_open = false;
         //North
@@ -92,9 +90,9 @@ Cell map[4][4];
 void generateMazeData() {
 
     /*topwall
-            rigth
-    left
-            botom*/
+        rigth
+        left
+    botom*/
 
     map[0][0].Door[0] = true;
     map[0][0].Door[1] = true;
@@ -115,7 +113,6 @@ void generateMazeData() {
     map[0][3].Door[1] = true;
     map[0][3].Door[2] = true;
     map[0][3].Door[3] = true;
-
 
 
     map[1][0].Door[0] = false;
@@ -179,6 +176,10 @@ void generateMazeData() {
     map[3][3].Door[3] = true;
 }
 
+typedef struct conntext {
+
+
+};
 
 /**added to test draw*/
 void updateAnimationLoop() {
@@ -197,8 +198,17 @@ void updateAnimationLoop() {
     bunny.SetVertices(playerVerticies);
     bunny.DrawObject();
 
+    //objective.SetVertices(boxVerticies);
+    //objective.DrawObject();
+
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    collisionDetection();
+    //std::cout << "Cilision state= " << collisionDetection() << std::endl;
+    //std::cout << "curent_x_Cordinate  " << getConntext << "curent_y_Cordinate " << curent_y_Cordinate << "doors " << d
+    //          << std::endl;
+
 }
 
 static glm::mat2 myR = glm::mat2(cos(0.00f) - 0.99f, -sin(0.00f),
@@ -212,6 +222,88 @@ static int rotationStatus = true;
 static glm::vec2 myT = glm::vec2(0.0f, 0.0f);
 static glm::vec2 myTLine = glm::vec2(0.0f, 0.0f);
 
+/*bool
+colisioMath(float obj1XSmall, float obj1XLarg, float obj1YSmall, float obj1YLarg, float obj2XSmall, float obj2XLarg,
+            float obj2YSmall, float obj2YLarg) {
+    /* collision x-axis?
+    bool collisionX = obj1XLarg >= obj2XSmall &&
+                      obj2XLarg >= obj1XSmall;
+    // collision y-axis?
+    bool collisionY = obj1YLarg >= obj2YSmall &&
+                      obj2YLarg >= obj1YSmall;
+    // collision only if on both axes
+    return collisionX && collisionY;
+    if()
+
+}*/
+
+bool collisionDetection() {
+    int offset = 0;
+    int cordinates = (curent_x_Cordinate * curent_y_Cordinate * 3);
+    //Map Object
+    float largestX;
+    float largestY;
+    float lowestX;
+    float lowestY;
+    //char object
+
+    float largestXChar = getLargest(playerVerticies[0][0], playerVerticies[1][0], playerVerticies[2][0]);
+    float largestYChar = getLargest(playerVerticies[0][1], playerVerticies[1][1], playerVerticies[2][1]);
+    float lowestXChar = getSmal(playerVerticies[0][0], playerVerticies[1][0], playerVerticies[2][0]);
+    float lowestYChar = getSmal(playerVerticies[0][1], playerVerticies[1][1], playerVerticies[2][1]);
+
+    for (int doo = 0; doo < 4; doo++) {
+        if (map[curent_x_Cordinate][curent_y_Cordinate].Door[doo]) {
+            offset = (3 * doo) + cordinates;
+            colisionVector1 = mapVericies[offset];
+            colisionVector2 = mapVericies[offset + 1];
+            colisionVector3 = mapVericies[offset + 2];
+            largestX = getLargest(colisionVector1[0], colisionVector2[0], colisionVector3[0]);
+            largestY = getLargest(colisionVector1[1], colisionVector2[1], colisionVector3[1]);
+            lowestX = getSmal(colisionVector1[0], colisionVector2[0], colisionVector3[0]);
+            lowestY = getSmal(colisionVector1[1], colisionVector2[1], colisionVector3[1]);
+            //if()largestX
+            //std::cout << "lowX " << lowestX << " largX " << largestX << " lowy " << lowestY << " largy " << largestY << std::endl;
+            //std::cout << "lowXChar " << lowestXChar << " largXChar " << largestXChar << " lowyChar " << lowestYChar << " largyChar " << largestYChar << std::endl;
+            //exit(99);
+
+            /*if(colisioMath(lowestX, largestX, lowestY, largestY, lowestXChar, largestXChar, lowestYChar, largestYChar))
+                exit(102);*/
+
+        }
+    }
+    /*dx=ax-bx;
+    dy=ax-by;
+    disance sqrt;*/
+}
+
+float getLargest(float val1, float val2, float val3) {
+    if (val1 >= val2) {
+        if (val1 >= val3)
+            return val1;
+        else
+            return val2;
+    } else {
+        if (val2 >= val3)
+            return val2;
+        else
+            return val3;
+    }
+}
+
+float getSmal(float val1, float val2, float val3) {
+    if (val1 < val2) {
+        if (val1 < val3)
+            return val1;
+        else
+            return val2;
+    } else {
+        if (val2 < val3)
+            return val2;
+        else
+            return val3;
+    }
+}
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
@@ -222,7 +314,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         } else {
             status++;
         }
-        printf("%s%d%s", "Status ", status, "  \n");
+        //printf("%s%d%s", "Status ", status, "  \n");
     }
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 
@@ -243,27 +335,27 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
                 case 0:
                     changeVec[1] += 0.1f;
                     //changeVec = glm::vec2(0.1f, 0.0f);
-                    std::cout << "up" << std::endl;
+                    //std::cout << "up" << std::endl;
                     break;
                 case 2:
                     //changeVec[0] += 0.1f;
                     changeVec[1] += 0.1f;
                     //                  changeVec = glm::vec2(0.0f, 0.1f);
-                    std::cout << "right" << std::endl;
+                    //std::cout << "right" << std::endl;
 
                     break;
                 case 4:
                     changeVec[1] += 0.1f;
                     //changeVec[0] += 0.1f;
                     //                changeVec = glm::vec2(-0.1f, 0.0f);
-                    std::cout << "botom" << std::endl;
+                    //std::cout << "botom" << std::endl;
 
                     break;
                 case 6:
                     //changeVec[0] += -0.1f;
                     changeVec[1] += 0.1f;
                     //               changeVec = glm::vec2(0.0f, 0.1f);
-                    std::cout << "left" << std::endl;
+                    //std::cout << "left" << std::endl;
 
                     break;
                     //changeVec[0] += -0.1f;
@@ -339,22 +431,19 @@ bool closeWindow() {
     return true;
 }
 
+
 bool newinitializeVertexbuffer() {
     ground = RenderingObject();
     ground.InitializeVAO();
-
     //create vertex data
     initVectormap();
     ground.SetVertices(mapVericies);
 
     //create normal data
     std::vector<glm::vec3> normals = std::vector<glm::vec3>();
-    normals.emplace_back(1.0f);
-    normals.emplace_back(0.5f);
-    normals.emplace_back(0.9f);
     ground.computeVertexNormalsOfTriangles(mapVericies, normals);
-    //ground.SetNormals(normals);
-    //glBufferSubData();
+    ground.SetNormals(normals);
+    //glBufferSubData
 
 
     //create texture data
@@ -373,6 +462,12 @@ bool newinitializeVertexbuffer() {
     bunny.InitializeVAO();
     /*initVectorChar();*/
     bunny.SetVertices(playerVerticies);
+
+    //####################### Third OBJECT: Objective ###################
+    objective = RenderingObject();
+    objective.InitializeVAO();
+    initVectorObjective();
+    objective.SetVertices(boxVerticies);
     /*bunny.DrawObject();*/
 
     return true;
@@ -405,7 +500,6 @@ bool initVectormap() {
         static int rotationLevel = 0;
         const glm::vec2 triangleVerticeLine1 = glm::vec2(-0.25f, -0.01f);
         const glm::vec2 triangleVerticeLine2 = glm::vec2(x_offsetVal - 0.25f, -0.01f);
-        //const glm::vec2 triangleVerticeLine2 = glm::vec2(0.25f, -0.01f);
         const glm::vec2 triangleVerticeLine3 = glm::vec2(-0.25f, 0.01f);
 
         glm::vec2 localtriangleVerticeLine1 = triangleVerticeLine1;
@@ -414,11 +508,11 @@ bool initVectormap() {
 
         glm::vec2 changeVecLine = glm::vec2(point1_x, point1_y);
 
-        std::cout << "sizeOfArr  " << sizeOfArrY << std::endl;
+        //std::cout << "sizeOfArr  " << sizeOfArrY << std::endl;
         for (int i = 0; i < sizeOfArr; i++) {
             for (int j = 0; j < sizeOfArrY; j++) {
                 for (int dor = 0; dor < 4; dor++) {
-                    bool state=false;
+                    bool state = false;
 
                     pointtemp_x = 0.0f;
                     pointtemp_y = 0.0f;
@@ -433,7 +527,7 @@ bool initVectormap() {
                         localRotation = fmod(0, 360);
                         x_tempOffsetVal = 0.0f + (x_offsetVal / 2);
                         y_tempOffsetVal = 0.0f;
-                        state=true;
+                        state = true;
                     }
                     //right
                     if (dor == 1 && map[i][j].Door[1]) {
@@ -442,7 +536,7 @@ bool initVectormap() {
                         x_tempOffsetVal = 0.0f + x_offsetVal;
                         y_tempOffsetVal = 0.0f - (y_offsetVal / 2);
                         //y_tempOffsetVal=0.0f;
-                        state=true;
+                        state = true;
                     }
                     //left
                     if (dor == 2 && map[i][j].Door[2]) {
@@ -451,17 +545,17 @@ bool initVectormap() {
                         x_tempOffsetVal = 0.0f;
                         y_tempOffsetVal = 0.0f - (y_offsetVal / 2);
                         //y_tempOffsetVal=0.0f;
-                        state=true;
+                        state = true;
                     }
                     //bottomwall
                     if (dor == 3 && map[i][j].Door[3]) {
                         localRotation = fmod(180, 360);
                         x_tempOffsetVal = 0.0f + (x_offsetVal / 2);
                         y_tempOffsetVal = 0.0f - y_offsetVal;
-                        state=true;
+                        state = true;
                     }
 
-                    if(state) {
+                    if (state) {
                         pointtemp_x = point1_x + x_tempOffsetVal;
                         //pointtemp_x= point1_x+x_offsetVal;
                         pointtemp_y = point1_y + y_tempOffsetVal;
@@ -469,9 +563,9 @@ bool initVectormap() {
 
                         changeVecLine = glm::vec2(pointtemp_x, pointtemp_y);
 
-                        std::cout << "localRotation " << localRotation;
-                        std::cout << "changeVecLine " << changeVecLine[0];
-                        std::cout << " " << changeVecLine[1] << std::endl;
+                        //std::cout << "localRotation " << localRotation;
+                        //std::cout << "changeVecLine " << changeVecLine[0];
+                        //std::cout << " " << changeVecLine[1] << std::endl;
 
 
                         float loc_myRLine = localRotation / 180.0f * M_PI;
@@ -516,7 +610,7 @@ bool initVectormap() {
                         mapVericies.emplace_back(localtriangleVerticeLine1[0], localtriangleVerticeLine1[1], 0.0f);
                         mapVericies.emplace_back(localtriangleVerticeLine2[0], localtriangleVerticeLine2[1], 0.0f);
                         mapVericies.emplace_back(localtriangleVerticeLine3[0], localtriangleVerticeLine3[1], 0.0f);
-                        state=false;
+                        state = false;
                     }
                 }
                 point1_x += x_offsetVal;
@@ -526,7 +620,13 @@ bool initVectormap() {
             point1_x = -1;
 
         }
+        //std::cout << " size  " << sizeof mapVericies << "\n";
+        //mapVericies.erase(mapVericies.begin(), mapVericies.begin() + 2);
+        //mapVericies.erase(mapVericies.begin());
+        //mapVericies.erase(mapVericies.begin());
+        //std::cout << " size  " << sizeof mapVericies << "\n";
     }
+    return true;
 }
 
 bool initVectorChar() {
@@ -554,7 +654,8 @@ bool initVectorChar() {
 
         myT = glm::vec2(curr_x, curr_y);
 
-        std::cout << "change " << changeVec[0] << " change2 " << changeVec[1] << std::endl;
+        //std::cout << "change " << changeVec[0] << " change2 " << changeVec[1] << std::endl;
+        //std::cout << "currx_x " << curr_x << "curry_y " << curr_y << std::endl;
         triangleVertice1 = myR * triangleVertice1 + myT;
         triangleVertice2 = myR * triangleVertice2 + myT;
         triangleVertice3 = myR * triangleVertice3 + myT;
@@ -567,6 +668,7 @@ bool initVectorChar() {
         myR = glm::mat2(1, 0,
                         0, 1);
 
+        //{} -> {1,2,3}
         if (inital) {
             playerVerticies.emplace_back(triangleVertice1[0], triangleVertice1[1], 0.0f);
             playerVerticies.emplace_back(triangleVertice2[0], triangleVertice2[1], 0.0f);
@@ -576,7 +678,7 @@ bool initVectorChar() {
             playerVerticies[0] = (glm::vec3(triangleVertice1[0], triangleVertice1[1], 0.0f));
             playerVerticies[1] = (glm::vec3(triangleVertice2[0], triangleVertice2[1], 0.0f));
             playerVerticies[2] = (glm::vec3(triangleVertice3[0], triangleVertice3[1], 0.0f));
-            std::cout << "test playerVerticies";
+            //std::cout << "test playerVerticies";
 
         }
         changeVec[0] = 0;
@@ -584,4 +686,143 @@ bool initVectorChar() {
 
     }
     return true;
+}
+
+void initVectorObjective() {
+    int sizeOfArr = sizeof(map) / sizeof(map[0]);
+    int sizeOfArrY = sizeOfArr = sizeof(map[0]) / sizeof(map[0]->Door);;
+
+    float x_offsetVal = (2.0f / (float) sizeOfArr);
+    float y_offsetVal = (2.0f / (float) sizeOfArrY);
+
+
+    const glm::vec2 triangleVerticeLine1 = glm::vec2(-0.25f, -0.01f);
+    const glm::vec2 triangleVerticeLine2 = glm::vec2(x_offsetVal - 0.25f, -0.01f);
+    const glm::vec2 triangleVerticeLine3 = glm::vec2(-0.25f, 0.01f);
+
+    /*const glm::vec2 triangleVerticeLine1 = glm::vec2(-0.25f, -0.25f);
+    const glm::vec2 triangleVerticeLine2 = glm::vec2(0.25f, -0.25f);
+    const glm::vec2 triangleVerticeLine3 = glm::vec2(0.0f, 0.25f);*/
+
+    glm::vec2 localtriangleVerticeBox1 = triangleVerticeLine1;
+    glm::vec2 localtriangleVerticeBox2 = triangleVerticeLine2;
+    glm::vec2 localtriangleVerticeBox3 = triangleVerticeLine3;
+    float localRotation = 0.0f;
+
+
+    glm::vec2 changeVecLine = glm::vec2(pointtemp_xBox, pointtemp_yBox);
+
+
+    float loc_myRBox = 0 / 180.0f * M_PI;
+
+    /*1st triangl*/
+    myRLine = glm::mat2(cos(loc_myRBox), -sin(loc_myRBox),
+                        sin(loc_myRBox), cos(loc_myRBox));
+
+    currLine_x = (myRLine * changeVecLine)[0];
+    currLine_y = (myRLine * changeVecLine)[1];
+
+    //changeVecLine = glm::vec2(pointtemp_x, pointtemp_y);
+    //myTLine = glm::vec2(pointtemp_xBox, pointtemp_yBox);
+
+
+    localtriangleVerticeBox1 = myRLine * localtriangleVerticeBox1 + changeVecLine;
+    localtriangleVerticeBox2 = myRLine * localtriangleVerticeBox2 + changeVecLine;
+    localtriangleVerticeBox3 = myRLine * localtriangleVerticeBox3 + changeVecLine;
+
+    boxVerticies.emplace_back(localtriangleVerticeBox1[0], localtriangleVerticeBox1[1], 0.0f);
+    boxVerticies.emplace_back(localtriangleVerticeBox2[0], localtriangleVerticeBox2[1], 0.0f);
+    boxVerticies.emplace_back(localtriangleVerticeBox3[0], localtriangleVerticeBox3[1], 0.0f);
+
+    /*second square*/
+    loc_myRBox = 180 / 180.0f * M_PI;
+
+    myRLine = glm::mat2(cos(loc_myRBox), -sin(loc_myRBox),
+                        sin(loc_myRBox), cos(loc_myRBox));
+
+    currLine_x = (myRLine * changeVecLine)[0];
+    currLine_y = (myRLine * changeVecLine)[1];
+
+    //changeVecLine = glm::vec2(pointtemp_x, pointtemp_y);
+    changeVecLine = glm::vec2(pointtemp_xBox, pointtemp_yBox);
+
+    localtriangleVerticeBox1 = myRLine * localtriangleVerticeBox1 + myTLine;
+    localtriangleVerticeBox2 = myRLine * localtriangleVerticeBox2 + myTLine;
+    localtriangleVerticeBox3 = myRLine * localtriangleVerticeBox3 + myTLine;
+
+    boxVerticies.emplace_back(localtriangleVerticeBox1[0], localtriangleVerticeBox1[1], 0.0f);
+    boxVerticies.emplace_back(localtriangleVerticeBox2[0], localtriangleVerticeBox2[1], 0.0f);
+    boxVerticies.emplace_back(localtriangleVerticeBox3[0], localtriangleVerticeBox3[1], 0.0f);
+
+}
+
+//std::vector<glm::vec3> mapVericies;
+//std::vector<glm::vec3> playerVerticies;
+//inspired by https://learnopengl.com/In-Practice/2D-Game/Collisions/Collision-detection
+/*bool CheckCollision(std::vector<glm::vec3> &one, std::vector<glm::vec3> &two) // AABB - AABB collision
+{
+    // collision x-axis?
+    bool collisionX = one.Position.x + one.Size.x >= two.Position.x &&
+                      two.Position.x + two.Size.x >= one.Position.x;
+    // collision y-axis?
+    bool collisionY = one.Position.y + one.Size.y >= two.Position.y &&
+                      two.Position.y + two.Size.y >= one.Position.y;
+    // collision only if on both axes
+    return collisionX && collisionY;
+}*/
+
+
+float clamp(float value, float min, float max) {
+    return std::max(min, std::min(max, value));
+}
+
+bool getCordinates(float x, float y) {
+    int sizeOfArr = sizeof(map) / sizeof(map[0]);
+    int sizeOfArrY = sizeOfArr = sizeof(map[0]) / sizeof(map[0]->Door);;
+
+    float x_offsetVal = (2.0f / (float) sizeOfArr);
+    float y_offsetVal = (2.0f / (float) sizeOfArrY);
+    float temp_x_Cordinate = (curr_x) * x_offsetVal;
+    float temp_y_Cordinate = (curr_y) * y_offsetVal;
+
+    if (temp_x_Cordinate > 0) {
+        curent_x_Cordinate = std::ceil(temp_x_Cordinate);
+        curent_x_Cordinate += 1;
+    } else {
+        curent_x_Cordinate = std::floor(temp_x_Cordinate);
+        curent_x_Cordinate += 2;
+    }
+    if (temp_y_Cordinate > 0) {
+        curent_y_Cordinate = std::floor(temp_y_Cordinate);
+        curent_y_Cordinate -= 1;
+    } else {
+        curent_y_Cordinate = std::ceil(temp_y_Cordinate);
+        curent_y_Cordinate -= 2;
+    }
+    curent_y_Cordinate = -curent_y_Cordinate;
+    return true;
+}
+
+int getConntext() {
+    getCordinates();
+    int sizeOfArr = sizeof(map) / sizeof(map[0]);
+    int sizeOfArrY = sizeOfArr = sizeof(map[0]) / sizeof(map[0]->Door);
+    int tempWall = 0;
+
+    for (int j = 0; j < sizeOfArrY; j++) {
+        for (int i = 0; i < sizeOfArr; i++) {
+            if (i == curent_x_Cordinate && j == curent_y_Cordinate) {
+                return tempWall;
+            }
+            for (bool as: map[i][j].Door) {
+                if (as == true) {
+                    tempWall++;
+
+                }
+            }
+        }
+    }
+    return tempWall;
+
+
 }
