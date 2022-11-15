@@ -1,0 +1,18 @@
+This is a dynamic Maze Game. At the moment there are still some issues with the collision detection. And the Objective has yet to be implemented properly.
+
+Short explanation To Somme of the implementation:
+
+Map generation: The map is generated using an array of type Cell (struct).
+This enables the map to be dynamically generated (if the map data is generated using a maze algorithm) Door=false means that there is no generated block placed to the location.
+
+The walls are generated using 2 triangles which are rotated and moved in the correct locations in the function initVectormap() this function writes to the mapVericies.
+
+Character:
+The character is initialized using initVectorChar() the Character gets moved using the glfwSetKeyCallback registered keyinputs.
+
+The Character gets the current location in relation to the Grid using getConntext(). This is also
+intended to be used for collision detection as this makes it possible to only calculate the collision for
+the current Cell.
+
+This Project was Based on The THU 2022 model code example snippets as well as the Profersors Github repository.
+Link: https://github.com/Alfred-Franz/OpenGL-Template
