@@ -68,7 +68,9 @@ void RenderingObject::SetTexture(std::vector<glm::vec2> uvbufferdata, GLubyte te
 
 void RenderingObject::DrawObject() {
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     // 1rst attribute buffer : vertices
+
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(

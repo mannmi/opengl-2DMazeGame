@@ -28,7 +28,7 @@ int main( void )
   if (!vertexbufferInitialized) return -1;
 
   // Create and compile our GLSL program from the shaders
-  programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader.fragmentshader");
+  programID = LoadShaders("SimpleVertexShader.vertexshader", "SimpleFragmentShader_fragment.shader");
 
   initializeMVPTransformation();
 
