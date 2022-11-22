@@ -97,14 +97,18 @@ int curent_x_Cordinate;
 int curent_y_Cordinate;
 float clamp(float value, float min, float max);
 
-glm::vec3 colisionVector1;
-glm::vec3 colisionVector2;
-glm::vec3 colisionVector3;
+glm::vec3 colisionWall;
+glm::vec3 colisionWall2;
+glm::vec3 colisionWall3;
 
 float getLargest(float,float,float);
 float getSmal(float,float,float);
 
 bool collisionDetection();
+
+int wallCount=0;
+
+std::vector<glm::vec3> vecBack;
 
 
 #endif
