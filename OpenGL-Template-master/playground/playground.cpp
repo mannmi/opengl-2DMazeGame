@@ -34,8 +34,8 @@ glm::vec2 changeVec = glm::vec2(0.0f, 0.0f);
 
 int main(void) {
     generateMazeData();
-    curr_x = 0;
-    curr_y = 0;
+    curr_x = 0.2;
+    curr_y = 0.4;
     rotation = 0;
     status = 0;
     VerticeMap.emplace_back(0.0f, 1.0f);
@@ -185,6 +185,7 @@ typedef struct conntext {
 void updateAnimationLoop() {
 
 
+    wallCount = getConntext();
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -197,9 +198,6 @@ void updateAnimationLoop() {
     //ground.DrawObject();
     bunny.SetVertices(playerVerticies);
     bunny.DrawObject();
-
-    //objective.SetVertices(boxVerticies);
-    //objective.DrawObject();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -237,15 +235,30 @@ colisioMath(float obj1XSmall, float obj1XLarg, float obj1YSmall, float obj1YLarg
 
 }*/
 
+bool calcColision(float largestX, float lowestX, float largestXChar, float lowestXChar, float lowestY, float largestY,
+                  float largestYChar, float lowestYChar) {
+    if (largestX < lowestXChar || lowestX > largestXChar) {
+        return false;
+
+    }
+    if (largestY < lowestYChar || lowestY > largestYChar) {
+        return false;
+    }
+    //exit(101);
+    return true;
+}
+
 bool collisionDetection() {
+    bool colision = false;
     int offset = 0;
-    int cordinates = (curent_x_Cordinate * curent_y_Cordinate * 3);
+    int cordinates = (wallCount * 3);
+
+
     //Map Object
     float largestX;
     float largestY;
     float lowestX;
     float lowestY;
-    //char object
 
     float largestXChar = getLargest(playerVerticies[0][0], playerVerticies[1][0], playerVerticies[2][0]);
     float largestYChar = getLargest(playerVerticies[0][1], playerVerticies[1][1], playerVerticies[2][1]);
@@ -253,36 +266,34 @@ bool collisionDetection() {
     float lowestYChar = getSmal(playerVerticies[0][1], playerVerticies[1][1], playerVerticies[2][1]);
 
     for (int doo = 0; doo < 4; doo++) {
+
         if (map[curent_x_Cordinate][curent_y_Cordinate].Door[doo]) {
-            offset = (3 * doo) + cordinates;
-            colisionVector1 = mapVericies[offset];
-            colisionVector2 = mapVericies[offset + 1];
-            colisionVector3 = mapVericies[offset + 2];
-            largestX = getLargest(colisionVector1[0], colisionVector2[0], colisionVector3[0]);
-            largestY = getLargest(colisionVector1[1], colisionVector2[1], colisionVector3[1]);
-            lowestX = getSmal(colisionVector1[0], colisionVector2[0], colisionVector3[0]);
-            lowestY = getSmal(colisionVector1[1], colisionVector2[1], colisionVector3[1]);
-            //if()largestX
-            //std::cout << "lowX " << lowestX << " largX " << largestX << " lowy " << lowestY << " largy " << largestY << std::endl;
-            //std::cout << "lowXChar " << lowestXChar << " largXChar " << largestXChar << " lowyChar " << lowestYChar << " largyChar " << largestYChar << std::endl;
-            //exit(99);
 
-            /*if(colisioMath(lowestX, largestX, lowestY, largestY, lowestXChar, largestXChar, lowestYChar, largestYChar))
-                exit(102);*/
+            //std::cout << "cordinates  " << cordinates << std::endl;
+            colisionWall = mapVericies[cordinates];
+            colisionWall2 = mapVericies[cordinates + 1];
+            colisionWall3 = mapVericies[cordinates + 2];
 
+            largestX = getLargest(colisionWall[0], colisionWall2[0], colisionWall3[0]);
+            largestY = getLargest(colisionWall[1], colisionWall2[1], colisionWall3[1]);
+            lowestX = getSmal(colisionWall[0], colisionWall2[0], colisionWall3[0]);
+            lowestY = getSmal(colisionWall[1], colisionWall2[1], colisionWall3[1]);
+
+            calcColision(largestX, lowestX, largestXChar, lowestXChar, lowestY, largestY,
+                         largestYChar, lowestYChar);
+
+            cordinates = (3) + cordinates;
         }
     }
-    /*dx=ax-bx;
-    dy=ax-by;
-    disance sqrt;*/
 }
 
 float getLargest(float val1, float val2, float val3) {
+    //std::cout << "larg " << val1 << "  " << val2 << "  " << val3 << std::endl;
     if (val1 >= val2) {
         if (val1 >= val3)
             return val1;
         else
-            return val2;
+            return val3;
     } else {
         if (val2 >= val3)
             return val2;
@@ -292,13 +303,13 @@ float getLargest(float val1, float val2, float val3) {
 }
 
 float getSmal(float val1, float val2, float val3) {
-    if (val1 < val2) {
-        if (val1 < val3)
+    if (val1 <= val2) {
+        if (val1 <= val3)
             return val1;
         else
-            return val2;
+            return val3;
     } else {
-        if (val2 < val3)
+        if (val2 <= val3)
             return val2;
         else
             return val3;
@@ -325,7 +336,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         else {
             status--;
         }
-        printf("%s%d%s", "Status ", status, "  \n");
+        //printf("%s%d%s", "Status ", status, "  \n");
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -633,6 +644,12 @@ bool initVectorChar() {
 
     static bool inital = true;
 
+    if (!inital) {
+        vecBack.emplace_back(playerVerticies[0]);
+        vecBack.emplace_back(playerVerticies[1]);
+        vecBack.emplace_back(playerVerticies[2]);
+    }
+
     if (rotationChange) {
         rotationChange = false;
 
@@ -678,6 +695,12 @@ bool initVectorChar() {
             playerVerticies[0] = (glm::vec3(triangleVertice1[0], triangleVertice1[1], 0.0f));
             playerVerticies[1] = (glm::vec3(triangleVertice2[0], triangleVertice2[1], 0.0f));
             playerVerticies[2] = (glm::vec3(triangleVertice3[0], triangleVertice3[1], 0.0f));
+
+            if(collisionDetection()){
+                playerVerticies[0] = vecBack[0];
+                playerVerticies[1] = vecBack[1];
+                playerVerticies[2] = vecBack[2];
+            }
             //std::cout << "test playerVerticies";
 
         }
@@ -685,6 +708,7 @@ bool initVectorChar() {
         changeVec[1] = 0;
 
     }
+    vecBack.clear();
     return true;
 }
 
